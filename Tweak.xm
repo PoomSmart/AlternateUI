@@ -1,15 +1,36 @@
 #import <substrate.h>
 
+extern "C" BOOL CPIsInternalDevice();
 extern "C" BOOL _UIApplicationUsesAlternateUI();
 
-MSHook(BOOL, _UIApplicationUsesAlternateUI)
+BOOL overrideInternal = NO;
+
+MSHook(BOOL, CPIsInternalDevice)
 {
-	return YES;
+	return overrideInternal ? YES : _CPIsInternalDevice();
+}
+
+MSHook(CFPropertyListRef, CFPreferencesCopyAppValue, CFStringRef key, CFStringRef applicationID)
+{
+	if (CFEqual(key, CFSTR("UIUseAlternateUI")))
+		return (CFPropertyListRef)kCFBooleanTrue;
+	return _CFPreferencesCopyAppValue(key, applicationID);
+}
+
+extern "C" void UIApplicationInitialize();
+
+MSHook(void, UIApplicationInitialize)
+{
+	overrideInternal = YES;
+	_UIApplicationInitialize();
+	overrideInternal = NO;
 }
 
 %ctor
 {
-	MSHookFunction(_UIApplicationUsesAlternateUI, MSHake(_UIApplicationUsesAlternateUI));
+	MSHookFunction(CPIsInternalDevice, MSHake(CPIsInternalDevice));
+	MSHookFunction(UIApplicationInitialize, MSHake(UIApplicationInitialize));
+	MSHookFunction(CFPreferencesCopyAppValue, MSHake(CFPreferencesCopyAppValue));
 }
 
 // ಠ_ಠ
