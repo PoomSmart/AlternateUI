@@ -11,3 +11,5 @@ MSHook(BOOL, _UIApplicationUsesAlternateUI)
 {
 	MSHookFunction(_UIApplicationUsesAlternateUI, MSHake(_UIApplicationUsesAlternateUI));
 }
+
+// ಠ_ಠ
