@@ -1,0 +1,8 @@
+Name: AlternateUI
+Package: com.PS.AlternateUI
+Author: PoomSmart
+Depends: firmware (>= 8.0), mobilesubstrate
+Section: Tweaks
+Version: 1.0
+Architecture: iphoneos-arm
+Description: UIUseAlternateUI as of iOS 8. ಠ_ಠ
